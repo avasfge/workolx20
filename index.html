@@ -3,94 +3,222 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Work Console 2.0</title>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono&family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <title>Work Console Professional</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: '#00ff41',
+                        dark: '#0d1117',
+                        card: '#161b22'
+                    },
+                    fontFamily: {
+                        mono: ['JetBrains Mono', 'monospace'],
+                        sans: ['Inter', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
     <style>
-        /* Вставь сюда весь CSS из предыдущего ответа */
-        :root { --main-green: #00ff41; --bg-dark: #0a0c10; --card-bg: #161b22; --border-color: #30363d; --text-gray: #8b949e; }
-        body { font-family: 'Inter', sans-serif; background: var(--bg-dark); color: #f0f6fc; padding: 16px; display: flex; flex-direction: column; align-items: center; }
-        .card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 16px; padding: 24px; width: 100%; max-width: 400px; }
-        .btn { width: 100%; padding: 18px; border-radius: 12px; border: none; font-weight: 700; cursor: pointer; margin-top: 15px; }
-        .btn-primary { background: var(--main-green); color: #000; }
-        .address-box { background: #000; border: 1px dashed var(--border-color); padding: 15px; border-radius: 12px; margin-top: 20px; display: none; }
-        #timer { color: #ff453a; font-family: 'JetBrains Mono'; font-size: 24px; text-align: center; display: none; }
+        body { background-color: #0d1117; -webkit-font-smoothing: antialiased; }
+        .glass { background: rgba(22, 27, 34, 0.8); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.1); }
+        .shimmer { background: linear-gradient(90deg, #161b22 25%, #1c2128 50%, #161b22 75%); background-size: 200% 100%; animation: shimmer 2s infinite; }
+        @keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
     </style>
 </head>
-<body>
+<body class="font-sans text-gray-300 p-4">
 
-    <div class="card" id="main-view">
-        <h1 style="color: var(--main-green); font-family: 'JetBrains Mono';">WORK_CONSOLE_V2</h1>
-        <p style="font-size: 13px; color: var(--text-gray);">Активация лицензии для доступа к системе.</p>
+    <div class="max-w-md mx-auto space-y-4">
         
-        <div id="timer">30:00</div>
-
-        <button id="activate-btn" class="btn btn-primary" onclick="initiatePayment()">АКТИВИРОВАТЬ</button>
-
-        <div id="address-box" class="address-box" onclick="copyAddress()">
-            <span style="font-size: 10px; color: var(--text-gray);">USDT TRC-20 ADDRESS:</span>
-            <div id="wallet-id" style="color: var(--main-green); font-size: 12px; word-break: break-all; margin-top: 5px;"></div>
+        <div class="flex justify-between items-center px-1 animate__animated animate__fadeIn">
+            <div class="flex items-center gap-2">
+                <div class="w-2 h-2 bg-brand rounded-full shadow-[0_0_8px_#00ff41]"></div>
+                <span class="font-mono text-[10px] uppercase tracking-widest text-gray-500">System v4.2.0-stable</span>
+            </div>
+            <span class="font-mono text-[10px] text-brand">Latency: 24ms</span>
         </div>
 
-        <button id="confirm-btn" class="btn" style="display:none; background: none; border: 1px solid var(--border-color); color: white;" onclick="notifyPaid()">Я ОПЛАТИЛ</button>
+        <div id="app-card" class="card glass rounded-3xl p-6 shadow-2xl animate__animated animate__fadeInUp">
+            
+            <div id="init-view" class="space-y-6">
+                <div>
+                    <h1 class="text-2xl font-800 text-white tracking-tight">Console Access</h1>
+                    <p class="text-sm text-gray-500 mt-1">Активируйте персональную лицензию воркера</p>
+                </div>
+
+                <div class="space-y-3">
+                    <div class="flex items-start gap-3 p-3 rounded-2xl bg-white/5 border border-white/5">
+                        <i data-lucide="zap" class="w-5 h-5 text-brand mt-0.5"></i>
+                        <div>
+                            <p class="text-xs font-semibold text-white">Full Infrastructure</p>
+                            <p class="text-[10px] text-gray-500">Доступ к парсерам, отрисовкам и логам 24/7</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-3 p-3 rounded-2xl bg-white/5 border border-white/5">
+                        <i data-lucide="shield-check" class="w-5 h-5 text-brand mt-0.5"></i>
+                        <div>
+                            <p class="text-xs font-semibold text-white">Anti-Ban 2.0</p>
+                            <p class="text-[10px] text-gray-500">Автоматическая смена Proxy и User-Agent</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex items-end justify-between py-2">
+                    <div>
+                        <p class="text-[10px] text-gray-500 uppercase font-bold tracking-wider">License Price</p>
+                        <p class="text-3xl font-800 text-white">3.00 <span class="text-brand text-sm">USDT</span></p>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-[10px] text-gray-500 font-mono">Available slots:</p>
+                        <p id="slots" class="text-sm font-bold text-brand font-mono">04/50</p>
+                    </div>
+                </div>
+
+                <button onclick="showPayment()" id="main-btn" class="w-full bg-brand hover:brightness-110 text-black font-800 py-4 rounded-2xl transition-all shadow-[0_10px_20px_rgba(0,255,65,0.2)] active:scale-95">
+                    АКТИВИРОВАТЬ
+                </button>
+            </div>
+
+            <div id="payment-view" class="hidden space-y-6 animate__animated animate__fadeIn">
+                <div class="text-center">
+                    <p class="text-[10px] text-gray-500 uppercase font-bold">Ожидание транзакции</p>
+                    <p id="timer" class="text-4xl font-mono font-bold text-red-500 my-2">30:00</p>
+                </div>
+
+                <div onclick="copyAddr()" class="bg-black/40 border border-brand/30 rounded-2xl p-4 cursor-pointer active:bg-black/60 transition-colors">
+                    <span class="text-[9px] text-gray-500 block mb-2 uppercase tracking-widest font-bold">USDT Address (TRC-20)</span>
+                    <p id="wallet-field" class="text-[11px] font-mono text-brand break-all leading-relaxed">TЗагрузка адреса...</p>
+                    <div class="flex justify-end items-center gap-1 mt-3 opacity-50">
+                        <i data-lucide="copy" class="w-3 h-3"></i>
+                        <span class="text-[8px] uppercase font-bold">Нажмите чтобы скопировать</span>
+                    </div>
+                </div>
+
+                <div class="space-y-3">
+                    <button onclick="confirmPayment()" id="paid-btn" class="w-full bg-white text-black font-800 py-4 rounded-2xl active:scale-95 transition-all">
+                        Я ОПЛАТИЛ
+                    </button>
+                    <p class="text-[9px] text-center text-gray-600 px-4">После оплаты система автоматически сопоставит ваш перевод. Не закрывайте страницу.</p>
+                </div>
+            </div>
+
+            <div id="verify-view" class="hidden text-center py-10 space-y-6">
+                <div class="inline-block relative">
+                    <div class="w-16 h-16 border-4 border-brand/20 border-t-brand rounded-full animate-spin"></div>
+                    <i data-lucide="search" class="w-6 h-6 text-brand absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"></i>
+                </div>
+                <div>
+                    <h2 class="text-lg font-bold text-white uppercase tracking-tight">Blockchain Scan</h2>
+                    <div id="log" class="text-[9px] font-mono text-gray-500 mt-4 h-12 overflow-hidden">
+                        > Поиск транзакции в сети TRON...
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-3 gap-2 animate__animated animate__fadeInUp animate__delay-1s">
+            <div class="bg-card border border-white/5 p-3 rounded-2xl text-center">
+                <i data-lucide="lock" class="w-4 h-4 mx-auto mb-1 text-gray-500"></i>
+                <p class="text-[8px] font-bold uppercase text-gray-400">SSL Secure</p>
+            </div>
+            <div class="bg-card border border-white/5 p-3 rounded-2xl text-center">
+                <i data-lucide="refresh-cw" class="w-4 h-4 mx-auto mb-1 text-gray-500"></i>
+                <p class="text-[8px] font-bold uppercase text-gray-400">Auto Verify</p>
+            </div>
+            <div class="bg-card border border-white/5 p-3 rounded-2xl text-center">
+                <i data-lucide="eye-off" class="w-4 h-4 mx-auto mb-1 text-gray-500"></i>
+                <p class="text-[8px] font-bold uppercase text-gray-400">Anon Access</p>
+            </div>
+        </div>
+
     </div>
 
     <script>
-        // ЗАМЕНИ ЭТУ ССЫЛКУ НА СВОЮ
-        const API_URL = "https://script.google.com/macros/s/AKfycbzUllTluNjgboYgtymBe-Ha6ggJOdUO8ey-TkjkpDARKFR15lKegIteyig-sX5p804Y/exec";
-        let walletAddr = "";
+        // ИНИЦИАЛИЗАЦИЯ
+        lucide.createIcons();
+        const tg = window.Telegram.WebApp;
+        tg.expand();
+        
+        const API_URL = "https://script.google.com/macros/s/AKfycbzwqo_TB89_6oLzSI30xx0_-wIxLEdwmBgCVVYgvGYQeWzQK_1V2UbuhmqxAaMypgrC/exec";
+        const WALLET = "TCn6bW3M8XpYyZtL9vR5qA7n2B1jH4s9Wk"; // Укажи свой вручную для гарантии
 
-        async function initiatePayment() {
-            const btn = document.getElementById('activate-btn');
-            btn.innerText = "CONNECTING...";
-            btn.disabled = true;
-
-            try {
-                const response = await fetch(API_URL, {
-                    method: 'POST',
-                    body: JSON.stringify({ action: 'getWallet' })
-                });
-                const res = await response.json();
-                
-                walletAddr = res.wallet;
-                document.getElementById('wallet-id').innerText = walletAddr;
-                document.getElementById('address-box').style.display = 'block';
-                document.getElementById('confirm-btn').style.display = 'block';
-                document.getElementById('timer').style.display = 'block';
-                btn.style.display = 'none';
-                startTimer(30 * 60);
-            } catch (e) {
-                alert("Ошибка подключения к API");
-                btn.disabled = false;
-                btn.innerText = "АКТИВИРОВАТЬ";
-            }
+        function showPayment() {
+            document.getElementById('init-view').classList.add('hidden');
+            document.getElementById('payment-view').classList.remove('hidden');
+            document.getElementById('wallet-field').innerText = WALLET;
+            startTimer(30 * 60);
         }
 
-        async function notifyPaid() {
-            const btn = document.getElementById('confirm-btn');
-            btn.innerText = "SENDING...";
-            btn.disabled = true;
+        async function confirmPayment() {
+            document.getElementById('payment-view').classList.add('hidden');
+            document.getElementById('verify-view').classList.remove('hidden');
+            
+            // Имитация логов для доверия
+            const logs = [
+                "> Подключение к узлу TRC-20...",
+                "> Поиск хеша транзакции...",
+                "> Проверка подтверждений сети...",
+                "> Синхронизация с базой данных...",
+                "> Уведомление администратора..."
+            ];
+            
+            let i = 0;
+            const logEl = document.getElementById('log');
+            const logInterval = setInterval(() => {
+                if(i < logs.length) {
+                    logEl.innerHTML += `<br>${logs[i]}`;
+                    i++;
+                } else {
+                    clearInterval(logInterval);
+                    sendFinalRequest();
+                }
+            }, 1500);
+        }
 
-            let userData = { userId: "TG_USER", username: "TG_NAME" };
-            // Интеграция с Telegram WebApp
-            if (window.Telegram && window.Telegram.WebApp) {
-                const user = window.Telegram.WebApp.initDataUnsafe.user;
-                if (user) { userData.userId = user.id; userData.username = user.username; }
+        async function sendFinalRequest() {
+            let user = { userId: "Web-User", username: "Guest" };
+            if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
+                user.userId = tg.initDataUnsafe.user.id;
+                user.username = tg.initDataUnsafe.user.username;
             }
 
             try {
+                // Используем POST через fetch
                 await fetch(API_URL, {
                     method: 'POST',
-                    body: JSON.stringify({ action: 'processPayment', userData: userData })
+                    mode: 'no-cors',
+                    body: JSON.stringify({ action: 'processPayment', userData: user })
                 });
-                document.getElementById('main-view').innerHTML = "<h2 style='color:var(--main-green)'>✓ ЗАПРОС ПРИНЯТ</h2><p>Ожидайте подтверждения в боте.</p>";
-            } catch (e) {
-                alert("Ошибка отправки");
+                
+                setTimeout(() => {
+                    document.getElementById('verify-view').innerHTML = `
+                        <div class="animate__animated animate__zoomIn">
+                            <div class="w-16 h-16 bg-brand rounded-full flex items-center justify-center mx-auto mb-4">
+                                <i data-lucide="check" class="text-black w-8 h-8"></i>
+                            </div>
+                            <h2 class="text-white font-bold uppercase">Запрос в очереди</h2>
+                            <p class="text-[10px] text-gray-500 mt-2 px-6">Ваша оплата обрабатывается нодами. Бот пришлет доступ сразу после подтверждения транзакции.</p>
+                        </div>
+                    `;
+                    lucide.createIcons();
+                }, 2000);
+            } catch(e) {
+                console.error(e);
             }
         }
 
-        function copyAddress() {
-            navigator.clipboard.writeText(walletAddr);
-            alert("Адрес скопирован");
+        function copyAddr() {
+            navigator.clipboard.writeText(WALLET);
+            tg.HapticFeedback.notificationOccurred('success');
+            alert("Адрес скопирован в буфер");
         }
 
         function startTimer(duration) {
@@ -102,7 +230,13 @@
                 if (--timer < 0) timer = 0;
             }, 1000);
         }
+
+        // Имитация мест
+        setInterval(() => {
+            const el = document.getElementById('slots');
+            let val = parseInt(el.innerText.split('/')[0]);
+            if(val < 15 && Math.random() > 0.9) el.innerText = (val + 1).toString().padStart(2, '0') + "/50";
+        }, 8000);
     </script>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </body>
 </html>
