@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Work Console 2.0</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono&family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* Вставь сюда весь CSS из предыдущего ответа */
+        :root { --main-green: #00ff41; --bg-dark: #0a0c10; --card-bg: #161b22; --border-color: #30363d; --text-gray: #8b949e; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg-dark); color: #f0f6fc; padding: 16px; display: flex; flex-direction: column; align-items: center; }
+        .card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 16px; padding: 24px; width: 100%; max-width: 400px; }
+        .btn { width: 100%; padding: 18px; border-radius: 12px; border: none; font-weight: 700; cursor: pointer; margin-top: 15px; }
+        .btn-primary { background: var(--main-green); color: #000; }
+        .address-box { background: #000; border: 1px dashed var(--border-color); padding: 15px; border-radius: 12px; margin-top: 20px; display: none; }
+        #timer { color: #ff453a; font-family: 'JetBrains Mono'; font-size: 24px; text-align: center; display: none; }
+    </style>
+</head>
+<body>
+
+    <div class="card" id="main-view">
+        <h1 style="color: var(--main-green); font-family: 'JetBrains Mono';">WORK_CONSOLE_V2</h1>
+        <p style="font-size: 13px; color: var(--text-gray);">Активация лицензии для доступа к системе.</p>
+        
+        <div id="timer">30:00</div>
+
+        <button id="activate-btn" class="btn btn-primary" onclick="initiatePayment()">АКТИВИРОВАТЬ</button>
+
+        <div id="address-box" class="address-box" onclick="copyAddress()">
+            <span style="font-size: 10px; color: var(--text-gray);">USDT TRC-20 ADDRESS:</span>
+            <div id="wallet-id" style="color: var(--main-green); font-size: 12px; word-break: break-all; margin-top: 5px;"></div>
+        </div>
+
+        <button id="confirm-btn" class="btn" style="display:none; background: none; border: 1px solid var(--border-color); color: white;" onclick="notifyPaid()">Я ОПЛАТИЛ</button>
+    </div>
+
+    <script>
+        // ЗАМЕНИ ЭТУ ССЫЛКУ НА СВОЮ
+        const API_URL = "https://script.google.com/macros/s/AKfycbzUllTluNjgboYgtymBe-Ha6ggJOdUO8ey-TkjkpDARKFR15lKegIteyig-sX5p804Y/exec";
+        let walletAddr = "";
+
+        async function initiatePayment() {
+            const btn = document.getElementById('activate-btn');
+            btn.innerText = "CONNECTING...";
+            btn.disabled = true;
+
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({ action: 'getWallet' })
+                });
+                const res = await response.json();
+                
+                walletAddr = res.wallet;
+                document.getElementById('wallet-id').innerText = walletAddr;
+                document.getElementById('address-box').style.display = 'block';
+                document.getElementById('confirm-btn').style.display = 'block';
+                document.getElementById('timer').style.display = 'block';
+                btn.style.display = 'none';
+                startTimer(30 * 60);
+            } catch (e) {
+                alert("Ошибка подключения к API");
+                btn.disabled = false;
+                btn.innerText = "АКТИВИРОВАТЬ";
+            }
+        }
+
+        async function notifyPaid() {
+            const btn = document.getElementById('confirm-btn');
+            btn.innerText = "SENDING...";
+            btn.disabled = true;
+
+            let userData = { userId: "TG_USER", username: "TG_NAME" };
+            // Интеграция с Telegram WebApp
+            if (window.Telegram && window.Telegram.WebApp) {
+                const user = window.Telegram.WebApp.initDataUnsafe.user;
+                if (user) { userData.userId = user.id; userData.username = user.username; }
+            }
+
+            try {
+                await fetch(API_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({ action: 'processPayment', userData: userData })
+                });
+                document.getElementById('main-view').innerHTML = "<h2 style='color:var(--main-green)'>✓ ЗАПРОС ПРИНЯТ</h2><p>Ожидайте подтверждения в боте.</p>";
+            } catch (e) {
+                alert("Ошибка отправки");
+            }
+        }
+
+        function copyAddress() {
+            navigator.clipboard.writeText(walletAddr);
+            alert("Адрес скопирован");
+        }
+
+        function startTimer(duration) {
+            let timer = duration;
+            setInterval(() => {
+                let min = parseInt(timer / 60, 10);
+                let sec = parseInt(timer % 60, 10);
+                document.getElementById('timer').textContent = (min < 10 ? "0" + min : min) + ":" + (sec < 10 ? "0" + sec : sec);
+                if (--timer < 0) timer = 0;
+            }, 1000);
+        }
+    </script>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+</body>
+</html>
